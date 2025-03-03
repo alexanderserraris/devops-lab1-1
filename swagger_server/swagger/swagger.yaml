@@ -1,0 +1,180 @@
+openapi: 3.0.0
+info:
+  title: Simple Inventory API
+  description: This is a simple API
+  contact:
+    email: you@your-company.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+servers:
+  - url: https://virtserver.swaggerhub.com/AlexanderSerraris/tutorial/1.0.0
+    description: SwaggerHub API Auto Mocking
+  - url: https://virtserver.swaggerhub.com/tutorial/1.0.0
+    description: SwaggerHub API Auto Mocking
+paths:
+  /student/{student_id}:
+    get:
+      summary: gets student
+      description: Returns a single student
+      operationId: get_student_by_id
+      parameters:
+        - name: student_id
+          in: path
+          description: the uid
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Student"
+        "400":
+          description: Invalid ID
+        "404":
+          description: Not found
+      x-openapi-router-controller: swagger_server.controllers.default_controller
+    delete:
+      summary: deletes a student
+      description: |
+        delete a single student
+      operationId: delete_student
+      parameters:
+        - name: student_id
+          in: path
+          description: the uid
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: number
+            format: integer
+      responses:
+        "200":
+          description: Student deleted successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/inline_response_200"
+        "400":
+          description: Invalid student ID supplied.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/inline_response_400"
+        "404":
+          description: Student not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/inline_response_404"
+      x-openapi-router-controller: swagger_server.controllers.default_controller
+  /student:
+    post:
+      summary: Add a new student
+      description: Adds an item to the system
+      operationId: add_student
+      requestBody:
+        description: Student item to add
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Student"
+      responses:
+        "200":
+          description: created
+          content:
+            application/json:
+              schema:
+                type: string
+                format: uuid
+                x-content-type: application/json
+        "400":
+          description: "invalid input, object invalid"
+        "409":
+          description: Already exists
+      x-openapi-router-controller: swagger_server.controllers.default_controller
+components:
+  schemas:
+    Student:
+      required:
+        - first_name
+        - last_name
+      type: object
+      properties:
+        student_id:
+          type: integer
+          description: Unique identifier for the student
+          format: int64
+          example: 123456
+        first_name:
+          type: string
+          description: First name of the student
+          example: John
+        last_name:
+          type: string
+          description: Last name of the student
+          example: Doe
+        grade_records:
+          type: array
+          description: List of grade records associated with the student
+          example:
+            - subject_name: Mathematics
+              grade: 9.5
+            - subject_name: Science
+              grade: 8
+          items:
+            $ref: "#/components/schemas/GradeRecord"
+      example:
+        student_id: 123456
+        last_name: Doe
+        grade_records:
+          - subject_name: Mathematics
+            grade: 9.5
+          - subject_name: Science
+            grade: 8
+        first_name: John
+    GradeRecord:
+      required:
+        - grade
+        - subject_name
+      type: object
+      properties:
+        subject_name:
+          type: string
+          description: Name of the subject
+          example: Physics
+        grade:
+          maximum: 10
+          minimum: 0
+          type: number
+          description: Grade received in the subject (0-10 scale)
+          format: float
+          example: 7.8
+    inline_response_200:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Student deleted successfully.
+      example:
+        message: Student deleted successfully.
+    inline_response_400:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Invalid student ID supplied.
+    inline_response_404:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Student not found.
