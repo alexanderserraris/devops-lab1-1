@@ -2,7 +2,7 @@ name: Build Test and push
 on: [push]
 env:
   IMAGE_NAME: student_service
-  REPO_NAME: ${{ github.event.repository.name }} # current repo name
+  REPO_NAME: alexanderserraris # Docker Hub username
 
 jobs:
   build:
