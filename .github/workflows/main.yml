@@ -18,7 +18,7 @@ jobs:
       #       docker ps && sleep 5
       - name: Run docker compose
         run: |
-          docker compose up --build && \
+          docker compose up --build -d && \
             docker ps && sleep 5
 
       - name: "Check files existence"
