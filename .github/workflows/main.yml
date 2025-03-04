@@ -16,9 +16,9 @@ jobs:
       #   run: |
       #     docker run -d -p 8080:8080 $REPO_NAME/$IMAGE_NAME:latest && \
       #       docker ps && sleep 5
-      - name: Run docker-compose
+      - name: Run docker compose
         run: |
-          docker-compose up --build && \
+          docker compose up --build && \
             docker ps && sleep 5
 
       - name: "Check files existence"
